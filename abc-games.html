@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#75d9c0">
+<title>ABC Adventure World — Kids Fun Zone V3</title>
+<style>
+:root{--ink:#26364b;--mint:#8ce6cf;--yellow:#ffdc70;--pink:#ff9eb7;--blue:#8bc8ff;--purple:#c4b0ff;--paper:#fffdf5;--green:#31b98b}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Trebuchet MS",system-ui,sans-serif;color:var(--ink)}
+body{background:linear-gradient(180deg,#b7f2e2 0%,#dff8d9 54%,#fff1bd 100%);min-height:100dvh;overflow-x:hidden}
+button{font:inherit;touch-action:manipulation;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible{outline:4px solid #4358b8;outline-offset:3px}
+.app{max-width:1100px;margin:auto;padding:clamp(10px,3vw,24px);padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:1000;font-size:clamp(18px,4vw,28px);letter-spacing:-.7px}
+.brand-mark{width:45px;height:45px;display:grid;place-items:center;background:#fff;border-radius:15px;box-shadow:0 5px 0 #6dbba8;font-size:25px;transform:rotate(-5deg)}
+.pill{border:0;border-radius:999px;background:#fff;padding:10px 14px;font-weight:800;box-shadow:0 4px 0 #bdddcf;color:var(--ink)}
+.hero{position:relative;background:var(--paper);border:4px solid white;border-radius:28px;padding:clamp(16px,4vw,28px);box-shadow:0 9px 0 #91cdbd;overflow:hidden}
+.hero:after{content:"✦";position:absolute;right:8%;top:4%;font-size:34px;color:#ffd46b;transform:rotate(14deg)}
+.hero-head{text-align:center;position:relative;z-index:1}
+h1{font-size:clamp(30px,7vw,54px);line-height:1.02;margin:5px 0 8px;font-weight:1000;letter-spacing:-1.8px}
+.subtitle{font-size:clamp(14px,3.2vw,18px);font-weight:700;color:#63758b;margin:0 0 18px}
+.mascot{font-size:clamp(58px,12vw,88px);display:block;filter:drop-shadow(0 5px 0 #e3e8d6);animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-7px) rotate(3deg)}}
+.menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+.mode{border:0;border-radius:20px;min-height:108px;padding:14px;display:flex;align-items:center;gap:12px;text-align:left;color:var(--ink);box-shadow:0 6px rgba(38,54,75,.13);transition:transform .12s}
+.mode:active,.letter:active,.choice:active,.bigbtn:active{transform:translateY(3px);box-shadow:0 2px rgba(38,54,75,.12)}
+.mode .emoji{font-size:clamp(30px,7vw,44px);flex-shrink:0}.mode b{display:block;font-size:clamp(16px,3.8vw,20px)}.mode small{display:block;margin-top:4px;font-size:12px;font-weight:700;opacity:.8;line-height:1.25}
+.mint{background:#a9f0dc}.yellow{background:#ffe69a}.pink{background:#ffc0d0}.blue{background:#b7dcff}.purple{background:#d6caff}.orange{background:#ffd0a1}
+.footerline{display:flex;justify-content:center;gap:8px;align-items:center;margin:18px 0 0;font-size:13px;font-weight:800;color:#63758b}
+.screen{display:none}.screen.active{display:block}
+.panel{background:var(--paper);border:4px solid white;border-radius:26px;padding:clamp(14px,3vw,24px);box-shadow:0 8px 0 #91cdbd}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+.panel h2{margin:0;font-size:clamp(23px,5vw,34px);letter-spacing:-.8px}
+.back{border:0;background:#e8f4ef;border-radius:14px;padding:10px 13px;font-weight:900;color:var(--ink)}
+.progress-wrap{height:12px;background:#e9eee8;border-radius:99px;overflow:hidden;margin:8px 0 18px}.progress{height:100%;width:0;background:linear-gradient(90deg,#42c99d,#a7e45c);border-radius:99px;transition:width .25s}
+.letter-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.letter{border:0;min-height:54px;border-radius:15px;background:#d8f6eb;color:#24394b;font-size:clamp(22px,5vw,32px);font-weight:1000;box-shadow:0 4px #a7d9c9}
+.letter:nth-child(4n+2){background:#ffe9a9;box-shadow:0 4px #e9d181}.letter:nth-child(4n+3){background:#ffd5e0;box-shadow:0 4px #eab1c1}.letter:nth-child(4n){background:#d9d0ff;box-shadow:0 4px #b9a9eb}
+.lesson-card{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center}
+.big-letter{font-size:clamp(100px,27vw,190px);line-height:.95;text-align:center;font-weight:1000;color:#36b98f;text-shadow:0 6px #c4efdf}
+.picture-card{background:#fff0b8;border-radius:24px;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px}
+.picture-emoji{font-size:clamp(68px,17vw,112px);line-height:1.2}.word{font-size:clamp(24px,5vw,38px);font-weight:1000;margin-top:5px}.word-sub{font-size:14px;font-weight:800;color:#6b7480;margin-top:3px}
+.lesson-copy{text-align:center;grid-column:1/-1;font-size:clamp(17px,4vw,22px);font-weight:900;margin:0}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.bigbtn{border:0;border-radius:17px;padding:14px 20px;font-weight:1000;font-size:17px;box-shadow:0 5px rgba(38,54,75,.14);min-height:52px}
+.primary{background:#43c99b;color:#123d35}.secondary{background:#ffe08b}.tertiary{background:#d8d0ff}
+.quiz-top{text-align:center}.question{font-size:clamp(22px,5vw,34px);font-weight:1000;margin:14px 0 8px}.hint{font-size:16px;color:#63758b;font-weight:800;margin:0 0 14px}
+.quiz-letter{font-size:clamp(65px,17vw,105px);font-weight:1000;color:#39b98e;line-height:1.05}
+.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:15px}
+.choice{border:0;border-radius:20px;background:#e0f7ed;min-height:105px;padding:10px 4px;box-shadow:0 5px #b4ddcf;font-size:clamp(24px,7vw,42px);font-weight:1000;color:var(--ink)}
+.choice .choice-emoji{display:block;font-size:35px}.choice .choice-word{display:block;font-size:14px;margin-top:3px}
+.feedback{min-height:34px;text-align:center;font-size:18px;font-weight:1000;margin-top:15px;color:#20966d}
+.stars{font-weight:1000;background:#fff0b8;border-radius:99px;padding:8px 12px;white-space:nowrap}
+.trace-area{background:#fff;border:3px dashed #bdddcf;border-radius:20px;overflow:hidden;touch-action:none;position:relative}
+#traceCanvas{display:block;width:100%;height:260px;touch-action:none}
+.trace-guide{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(120px,35vw,210px);font-weight:1000;color:#e6eee9;pointer-events:none;user-select:none}
+.trace-tools{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:12px}
+.end-card{text-align:center;padding:24px 10px}.end-card .trophy{font-size:82px}.end-card h2{font-size:34px;margin:8px}.end-card p{font-size:18px;font-weight:800;color:#66758a}
+
+/* Version 2 learning upgrades */
+.new-feature{margin-top:16px;background:#f2fbf5;border:3px solid #fff;border-radius:22px;padding:16px;box-shadow:0 5px #c4e8d8}
+.progress-title{display:flex;justify-content:space-between;gap:8px;font-weight:1000;margin-bottom:8px}
+.progress-dots{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:5px}
+.progress-dot{height:13px;border-radius:99px;background:#e3ebe6}
+.progress-dot.done{background:#42c99b}
+.fox-teacher{display:flex;align-items:center;gap:14px;background:#fff0bd;border-radius:22px;padding:14px;margin:12px 0}
+.fox-face{font-size:clamp(58px,15vw,90px);animation:bob 2s ease-in-out infinite}
+.fox-speech{font-size:clamp(17px,4vw,22px);font-weight:900;line-height:1.35}
+.map-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:15px}
+.map-stop{border:0;border-radius:18px;min-height:100px;padding:12px;text-align:left;font-weight:900;color:var(--ink);background:#dff7eb;box-shadow:0 5px #b9dfd0}
+.map-stop.locked{opacity:.58;filter:grayscale(.6)}
+.map-stop span{display:block;font-size:28px;margin-bottom:5px}
+.song-stage{text-align:center;padding:18px 8px}
+.song-letters{font-size:clamp(25px,6vw,42px);font-weight:1000;line-height:1.8;letter-spacing:2px;color:#35b88d}
+.song-letters .singing{display:inline-block;color:#ed8aa5;transform:scale(1.22)}
+.confetti{position:fixed;top:-18px;width:10px;height:16px;border-radius:3px;z-index:20;pointer-events:none;animation:confetti-fall 1.5s ease-in forwards}
+@keyframes confetti-fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@media(max-width:380px){.map-grid{gap:7px}.map-stop{padding:10px;min-height:88px}}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#26364b;color:white;padding:12px 18px;border-radius:99px;font-weight:900;box-shadow:0 5px 18px #0002;z-index:10;display:none;max-width:90%;text-align:center}
+@media(min-width:700px){.menu{grid-template-columns:repeat(3,minmax(0,1fr))}.letter-grid{grid-template-columns:repeat(7,minmax(0,1fr))}.letter{min-height:62px}.lesson-card{grid-template-columns:1fr 1fr}.panel{padding:26px}}
+@media(max-width:380px){.menu{gap:9px}.mode{padding:11px;min-height:98px;gap:8px}.mode .emoji{font-size:29px}.letter-grid{gap:6px}.letter{min-height:48px;border-radius:12px}.choices{gap:7px}.choice{min-height:92px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">🌈</span><span>ABC Adventure World</span></div>
+    <button class="pill" id="soundToggle" aria-label="Toggle sound">🔊 Sound On</button>
+  </header>
+
+  <main>
+    <section id="home" class="screen active">
+      <div class="hero">
+        <div class="hero-head">
+          <span class="mascot" aria-hidden="true">🦊</span>
+          <h1>Let's Explore<br><span style="color:#27ad83">ABC!</span></h1>
+          <p class="subtitle">Learn letters. Play games. Earn stars!</p>
+        </div>
+        <div class="menu">
+          <button class="mode mint" data-mode="learn"><span class="emoji">📚</span><span><b>Learn ABC</b><small>Meet all 26 letters</small></span></button>
+          <button class="mode yellow" data-mode="find"><span class="emoji">🔎</span><span><b>Find the Letter</b><small>Listen, look, and tap</small></span></button>
+          <button class="mode pink" data-mode="match"><span class="emoji">🧩</span><span><b>Match & Learn</b><small>Letters meet pictures</small></span></button>
+          <button class="mode blue" data-mode="trace"><span class="emoji">✏️</span><span><b>Trace Letters</b><small>Write with your finger</small></span></button>
+          <button class="mode purple" data-mode="adventure"><span class="emoji">🗺️</span><span><b>ABC Adventure</b><small>Complete a star mission</small></span></button>
+          <button class="mode orange" data-mode="listen"><span class="emoji">🎧</span><span><b>Listen & Learn</b><small>Hear a letter and word</small></span></button>
+          <button class="mode mint" data-mode="fox"><span class="emoji">🦊</span><span><b>Fox Teacher</b><small>Talk and learn together</small></span></button>
+          <button class="mode yellow" data-mode="song"><span class="emoji">🎵</span><span><b>ABC Song Time</b><small>Sing the alphabet</small></span></button>
+          <button class="mode purple" data-mode="map"><span class="emoji">🗺️</span><span><b>Adventure Map</b><small>Explore letter worlds</small></span></button>
+        </div>
+        <div class="new-feature">
+          <div class="progress-title"><span>🌱 My ABC Garden</span><span id="learnedCount">0 / 26 letters</span></div>
+          <div class="progress-dots" id="progressDots"></div>
+        </div>
+        <div class="footerline"><span>⭐ <span id="homeStars">0</span> stars collected</span><span>•</span><span>Made for little explorers</span></div>
+      </div>
+    </section>
+
+    <section id="learn" class="screen">
+      <div class="panel">
+        <div class="panel-head"><button class="back" data-home>← Home</button><h2>Meet the Letters</h2><span class="stars">⭐ <span class="star-count">0</span></span></div>
+        <p class="hint">Tap any letter to meet it!</p>
+        <div class="letter-grid" id="letterGrid"></div>
+        <div class="actions"><button class="bigbtn primary" id="surpriseLetter">🎲 Surprise Me!</button></div>
+      </div>
+    </section>
+
+    <section id="lesson" class="screen">
+      <div class="panel">
+        <div class="panel-head"><button class="back" id="lessonBack">← Letters</button><span class="stars">⭐ <span class="star-count">0</span></span></div>
+        <div class="progress-wrap"><div class="progress" id="learnProgress"></div></div>
+        <div class="lesson-card">
+          <div class="big-letter" id="lessonLetter">A</div>
+          <div class="picture-card"><span class="picture-emoji" id="lessonEmoji">🍎</span><div class="word" id="lessonWord">Apple</div><div class="word-sub" id="lessonPhrase">A is for Apple!</div></div>
+          <p class="lesson-copy" id="lessonCopy">A says /a/! Apple starts with A.</p>
+        </div>
+        <div class="actions"><button class="bigbtn secondary" id="sayLesson">🔊 Hear It</button><button class="bigbtn primary" id="nextLesson">Next Letter ➜</button></div>
+      </div>
+    </section>
+
+    <section id="quiz" class="screen">
+      <div class="panel">
+        <div class="panel-head"><button class="back" data-home>← Home</button><span class="stars">⭐ <span class="star-count">0</span></span></div>
+        <div class="progress-wrap"><div class="progress" id="quizProgress"></div></div>
+        <div class="quiz-top">
+          <div id="quizBadge" style="font-size:40px">🔎</div>
+          <div class="question" id="quizQuestion">Find the letter A!</div>
+          <p class="hint" id="quizHint">Tap the letter you hear.</p>
+          <div class="quiz-letter" id="quizPrompt">A</div>
+        </div>
+        <div class="choices" id="choices"></div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+        <div class="actions"><button class="bigbtn secondary" id="hearQuestion">🔊 Hear Again</button><button class="bigbtn primary" id="nextQuestion" style="display:none">Next ➜</button></div>
+      </div>
+    </section>
+
+    <section id="trace" class="screen">
+      <div class="panel">
+        <div class="panel-head"><button class="back" data-home>← Home</button><span class="stars">⭐ <span class="star-count">0</span></span></div>
+        <h2 style="text-align:center;margin-bottom:8px">Finger Tracing ✏️</h2>
+        <p class="hint" style="text-align:center">Trace the big letter. Try your best!</p>
+        <div class="trace-area"><div class="trace-guide" id="traceGuide">A</div><canvas id="traceCanvas" aria-label="Draw the letter here"></canvas></div>
+        <div class="actions"><button class="bigbtn secondary" id="traceHear">🔊 Hear Letter</button><button class="bigbtn primary" id="traceNext">Next Letter ➜</button></div>
+        <div class="trace-tools"><button class="pill" id="traceClear">🧽 Try Again</button><button class="pill" id="traceDone">⭐ I Did It!</button></div>
+        <div class="feedback" id="traceFeedback" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="fox" class="screen">
+      <div class="panel">
+        <div class="panel-head"><button class="back" data-home>← Home</button><span class="stars">⭐ <span class="star-count">0</span></span></div>
+        <h2 style="text-align:center">Fox Teacher's Corner</h2>
+        <div class="fox-teacher"><div class="fox-face">🦊</div><div class="fox-speech" id="foxSpeech" aria-live="polite">Hello, little explorer! Ready to learn a letter?</div></div>
+        <div class="lesson-card">
+          <div class="big-letter" id="foxLetter">A</div>
+          <div class="picture-card"><span class="picture-emoji" id="foxEmoji">🍎</span><div class="word" id="foxWord">Apple</div><div class="word-sub" id="foxPhrase">A is for Apple!</div></div>
+        </div>
+        <div class="actions"><button class="bigbtn secondary" id="foxTeach">🗣️ Teach Me</button><button class="bigbtn tertiary" id="foxQuestion">❓ Ask Me</button><button class="bigbtn primary" id="foxNext">Next Letter ➜</button></div>
+        <div class="choices" id="foxChoices" style="display:none"></div>
+        <div class="feedback" id="foxFeedback" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="song" class="screen">
+      <div class="panel">
+        <div class="panel-head"><button class="back" data-home>← Home</button><span class="stars">⭐ <span class="star-count">0</span></span></div>
+        <div class="song-stage"><div style="font-size:66px">🎵 🦊 🎶</div><h2>ABC Song Time!</h2><p class="hint">Listen and sing along with the alphabet.</p><div class="song-letters" id="songLetters">A B C D E F G<br>H I J K L M N O P<br>Q R S T U V<br>W X Y and Z</div><p class="hint" id="songStatus" aria-live="polite">Ready to sing?</p></div>
+        <div class="actions"><button class="bigbtn primary" id="playSong">▶ Sing ABC</button><button class="bigbtn secondary" id="stopSong">⏹ Stop</button></div>
+      </div>
+    </section>
+
+    <section id="map" class="screen">
+      <div class="panel">
+        <div class="panel-head"><button class="back" data-home>← Home</button><span class="stars">⭐ <span class="star-count">0</span></span></div>
+        <h2>Adventure Map 🗺️</h2><p class="hint">Visit each world and discover new letters. Learn letters by opening their cards.</p>
+        <div class="map-grid" id="mapGrid"></div>
+      </div>
+    </section>
+
+    <section id="finish" class="screen">
+      <div class="panel end-card">
+        <div class="trophy">🏆</div><h2>Super Explorer!</h2>
+        <p id="finishMessage">You did it!</p>
+        <p>⭐ Stars collected: <strong id="finishStars">0</strong></p>
+        <div class="actions"><button class="bigbtn primary" id="playAgain">Play Again</button><button class="bigbtn secondary" data-home>🏠 Home</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+const DATA=[
+['A','Apple','🍎'],['B','Ball','⚽'],['C','Cat','🐱'],['D','Dog','🐶'],['E','Elephant','🐘'],['F','Fish','🐠'],
+['G','Giraffe','🦒'],['H','House','🏠'],['I','Ice cream','🍦'],['J','Juice','🧃'],['K','Kite','🪁'],['L','Lion','🦁'],
+['M','Moon','🌙'],['N','Nest','🪺'],['O','Orange','🍊'],['P','Penguin','🐧'],['Q','Queen','👑'],['R','Rainbow','🌈'],
+['S','Sun','☀️'],['T','Turtle','🐢'],['U','Umbrella','☂️'],['V','Violin','🎻'],['W','Whale','🐳'],['X','Xylophone','🎵'],
+['Y','Yo-yo','🪀'],['Z','Zebra','🦓']];
+const $=id=>document.getElementById(id);
+let soundOn=true, stars=0, current=0, quizIndex=0, quizTotal=10, quizCorrect=0, quizType='find', activeQuiz=null, locked=false, traceIndex=0, lastMode='find', toastTimer=null, foxIndex=0, learned=[];
+try{stars=Number(localStorage.getItem('abcAdventureStars')||0)||0;learned=JSON.parse(localStorage.getItem('abcAdventureLearned')||'[]');if(!Array.isArray(learned))learned=[]}catch(e){learned=[]}
+function save(){try{localStorage.setItem('abcAdventureStars',String(stars));localStorage.setItem('abcAdventureLearned',JSON.stringify(learned))}catch(e){} updateStars();renderProgress()}
+function markLearned(i){if(!learned.includes(DATA[i][0])){learned.push(DATA[i][0]);try{localStorage.setItem('abcAdventureLearned',JSON.stringify(learned))}catch(e){}renderProgress()}}
+function renderProgress(){
+ const dots=$('progressDots');if(!dots)return;dots.innerHTML='';
+ DATA.forEach(d=>{const s=document.createElement('span');s.className='progress-dot'+(learned.includes(d[0])?' done':'');s.title=d[0];dots.appendChild(s)});
+ $('learnedCount').textContent=learned.length+' / 26 letters';
+}
+function celebrate(){for(let i=0;i<24;i++){const c=document.createElement('i');c.className='confetti';c.style.left=(Math.random()*100)+'vw';c.style.background=['#ff9eb7','#ffdc70','#8ce6cf','#8bc8ff','#c4b0ff'][i%5];c.style.animationDelay=(Math.random()*.35)+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),2000)}}
+function updateStars(){document.querySelectorAll('.star-count').forEach(e=>e.textContent=stars);$('homeStars').textContent=stars}
+function speak(text){
+ if(!soundOn)return;
+ try{
+  if(!('speechSynthesis'in window)){showToast('Audio is not supported in this browser.');return}
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.82;u.pitch=1.12;
+  const voices=window.speechSynthesis.getVoices();const v=voices.find(x=>/^en(-|_)(US|GB)/i.test(x.lang))||voices.find(x=>/^en/i.test(x.lang));if(v)u.voice=v;
+  window.speechSynthesis.speak(u);
+ }catch(e){showToast('Please try the sound again.')}
+}
+function showToast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.display='none',2200)}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});updateStars()}
+function home(){if('speechSynthesis'in window)window.speechSynthesis.cancel();showScreen('home')}
+document.querySelectorAll('[data-home]').forEach(b=>b.addEventListener('click',home));
+$('soundToggle').addEventListener('click',()=>{soundOn=!soundOn;$('soundToggle').textContent=soundOn?'🔊 Sound On':'🔇 Sound Off';if(!soundOn&&'speechSynthesis'in window)window.speechSynthesis.cancel();else speak('Sound is on!')});
+function sayData(i){const d=DATA[i];speak('The letter '+d[0]+'. '+d[0]+' is for '+d[1]+'. '+d[1]+' starts with '+d[0]+'.')}
+function openLesson(i){current=(i+26)%26;markLearned(current);renderLesson();showScreen('lesson');sayData(current)}
+function renderLesson(){const d=DATA[current];$('lessonLetter').textContent=d[0];$('lessonEmoji').textContent=d[2];$('lessonWord').textContent=d[1];$('lessonPhrase').textContent=d[0]+' is for '+d[1]+'!';$('lessonCopy').textContent=d[0]+' is for '+d[1]+'. Great learning!';$('learnProgress').style.width=((current+1)/26*100)+'%'}
+function buildGrid(){const g=$('letterGrid');g.innerHTML='';DATA.forEach((d,i)=>{const b=document.createElement('button');b.className='letter';b.textContent=d[0];b.setAttribute('aria-label','Learn letter '+d[0]);if(learned.includes(d[0]))b.style.outline='3px solid #31b98b';b.addEventListener('click',()=>openLesson(i));g.appendChild(b)})}
+$('lessonBack').addEventListener('click',()=>showScreen('learn'));$('sayLesson').addEventListener('click',()=>sayData(current));$('nextLesson').addEventListener('click',()=>{current=(current+1)%26;renderLesson();sayData(current);if(current===0)showToast('You explored all 26 letters!')});
+$('surpriseLetter').addEventListener('click',()=>openLesson(Math.floor(Math.random()*26)));
+function startQuiz(type){
+ quizType=type;lastMode=type;quizIndex=0;quizCorrect=0;locked=false;showScreen('quiz');nextQuiz();
+}
+function shuffled(arr){return arr.slice().sort(()=>Math.random()-.5)}
+function nextQuiz(){
+ if(quizIndex>=quizTotal){$('finishMessage').textContent='You answered '+quizCorrect+' out of '+quizTotal+' questions correctly. Keep exploring!';$('finishStars').textContent=stars;showScreen('finish');return}
+ locked=false;activeQuiz=Math.floor(Math.random()*26);const d=DATA[activeQuiz];$('quizProgress').style.width=(quizIndex/quizTotal*100)+'%';$('feedback').textContent='';$('nextQuestion').style.display='none';$('choices').innerHTML='';
+ let options=[activeQuiz];while(options.length<3){const n=Math.floor(Math.random()*26);if(!options.includes(n))options.push(n)}options=shuffled(options);
+ if(quizType==='find'||quizType==='adventure'){
+  $('quizBadge').textContent=quizType==='adventure'?'🗺️':'🔎';$('quizQuestion').textContent=quizType==='adventure'?'Adventure mission! Find this letter!':'Find the letter '+d[0]+'!';$('quizHint').textContent='Listen and tap the matching letter.';$('quizPrompt').textContent=d[0];speak('Find the letter '+d[0]+'.');
+  options.forEach(i=>{const b=document.createElement('button');b.className='choice';b.textContent=DATA[i][0];b.setAttribute('aria-label','Letter '+DATA[i][0]);b.addEventListener('click',()=>answer(i===activeQuiz,b));$('choices').appendChild(b)});
+ }else if(quizType==='match'){
+  $('quizBadge').textContent='🧩';$('quizQuestion').textContent='Which letter starts '+d[1]+'?';$('quizHint').textContent='Look at the picture and choose a letter.';$('quizPrompt').textContent=d[2];speak('Which letter starts '+d[1]+'?');
+  options.forEach(i=>{const b=document.createElement('button');b.className='choice';b.textContent=DATA[i][0];b.addEventListener('click',()=>answer(i===activeQuiz,b));$('choices').appendChild(b)});
+ }else{
+  $('quizBadge').textContent='🎧';$('quizQuestion').textContent='Which word starts with '+d[0]+'?';$('quizHint').textContent='Choose the matching picture.';$('quizPrompt').textContent=d[0];speak('Which word starts with '+d[0]+'?');
+  options.forEach(i=>{const b=document.createElement('button');b.className='choice';b.innerHTML='<span class="choice-emoji">'+DATA[i][2]+'</span><span class="choice-word">'+DATA[i][1]+'</span>';b.addEventListener('click',()=>answer(i===activeQuiz,b));$('choices').appendChild(b)});
+ }
+}
+function answer(ok,btn){
+ if(locked)return;locked=true;
+ if(ok){quizCorrect++;stars++;markLearned(activeQuiz);save();celebrate();$('feedback').textContent=['Great job! 🌟','You got it! 🎉','Amazing! ⭐'][Math.floor(Math.random()*3)];$('feedback').style.color='#20966d';btn.style.background='#a8f0c9';speak('Great job! '+DATA[activeQuiz][0]+' is correct.');}
+ else{$('feedback').textContent='Good try! The answer is '+DATA[activeQuiz][0]+'. 💛';$('feedback').style.color='#d17b34';btn.style.background='#ffe0a8';speak('Good try! The answer is '+DATA[activeQuiz][0]+'.');}
+ $('choices').querySelectorAll('button').forEach(b=>b.disabled=true);$('quizProgress').style.width=((quizIndex+1)/quizTotal*100)+'%';$('nextQuestion').style.display='inline-block';quizIndex++;
+}
+$('nextQuestion').addEventListener('click',nextQuiz);$('hearQuestion').addEventListener('click',()=>{if(activeQuiz!==null){const d=DATA[activeQuiz];speak(quizType==='match'?'Which letter starts '+d[1]+'?':quizType==='listen'?'Which word starts with '+d[0]+'?':'Find the letter '+d[0]+'.')}});
+
+function openFox(i){foxIndex=(i+26)%26;const d=DATA[foxIndex];$('foxLetter').textContent=d[0];$('foxEmoji').textContent=d[2];$('foxWord').textContent=d[1];$('foxPhrase').textContent=d[0]+' is for '+d[1]+'!';$('foxSpeech').textContent='Hello! Let’s learn '+d[0]+' today!';$('foxFeedback').textContent='';$('foxChoices').style.display='none';markLearned(foxIndex)}
+$('foxTeach').addEventListener('click',()=>{const d=DATA[foxIndex];$('foxSpeech').textContent=d[0]+' is for '+d[1]+'! You are doing great!';speak('Hello, little explorer! The letter '+d[0]+'. '+d[0]+' is for '+d[1]+'. Can you say '+d[1]+'?');markLearned(foxIndex)});
+$('foxNext').addEventListener('click',()=>{openFox((foxIndex+1)%26);speak('Here comes the letter '+DATA[foxIndex][0]+'.')});
+$('foxQuestion').addEventListener('click',()=>{const d=DATA[foxIndex];$('foxChoices').innerHTML='';$('foxChoices').style.display='grid';$('foxFeedback').textContent='';let opts=[foxIndex];while(opts.length<3){let n=Math.floor(Math.random()*26);if(!opts.includes(n))opts.push(n)}shuffled(opts).forEach(i=>{const b=document.createElement('button');b.className='choice';b.textContent=DATA[i][0];b.addEventListener('click',()=>{if(b.disabled)return;$('foxChoices').querySelectorAll('button').forEach(x=>x.disabled=true);if(i===foxIndex){$('foxFeedback').textContent='That’s right! You are a star! ⭐';stars++;save();celebrate();speak('That is right! '+d[0]+' is for '+d[1]+'.')}else{$('foxFeedback').textContent='Good try! Look for '+d[0]+'.';speak('Good try! The answer is '+d[0]+'.')}});$('foxChoices').appendChild(b)});speak('Which letter is '+d[0]+'? Tap the right letter.')});
+function buildMap(){const grid=$('mapGrid');grid.innerHTML='';const worlds=[['🌳','Letter Forest',0,6],['🌊','Ocean of Letters',6,12],['☁️','Cloud Castle',12,19],['🌈','Rainbow Valley',19,26]];worlds.forEach(([emoji,name,start,end])=>{const count=DATA.slice(start,end).filter(d=>learned.includes(d[0])).length;const b=document.createElement('button');b.className='map-stop';b.innerHTML='<span>'+emoji+'</span>'+name+'<small style="display:block;margin-top:5px">'+count+' / '+(end-start)+' letters learned</small>';b.addEventListener('click',()=>{const i=DATA.slice(start,end).findIndex(d=>!learned.includes(d[0]));openLesson(i<0?start:start+i)});grid.appendChild(b)})}
+function playAbcSong(){
+ if(!soundOn){showToast('Turn sound on to hear the ABC song.');return}
+ if(!('speechSynthesis'in window)){showToast('Speech is not supported in this browser.');return}
+ window.speechSynthesis.cancel();$('songStatus').textContent='Sing along, little explorer! 🎶';
+ const lines=['A, B, C, D, E, F, G','H, I, J, K, L, M, N, O, P','Q, R, S, T, U, V','W, X, Y, and Z','Now I know my ABCs','Next time will you sing with me?'];
+ let n=0;function nextLine(){if(n>=lines.length){$('songStatus').textContent='Fantastic singing! ⭐';stars++;save();celebrate();return}const u=new SpeechSynthesisUtterance(lines[n++]);u.lang='en-US';u.rate=.68;u.pitch=1.25;u.onend=()=>setTimeout(nextLine,350);u.onerror=()=>{$('songStatus').textContent='Tap Sing ABC to try again.'};window.speechSynthesis.speak(u)}nextLine()
+}
+$('playSong').addEventListener('click',playAbcSong);$('stopSong').addEventListener('click',()=>{if('speechSynthesis'in window)window.speechSynthesis.cancel();$('songStatus').textContent='Song stopped. Tap Sing ABC when you are ready.'});
+
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.mode;if(m==='learn'){buildGrid();showScreen('learn')}else if(m==='trace'){startTrace()}else if(m==='fox'){openFox(foxIndex);showScreen('fox');speak('Hello, little explorer! I am your Fox Teacher. Tap Teach Me to begin.')}else if(m==='song'){showScreen('song')}else if(m==='map'){buildMap();showScreen('map')}else if(m==='find'||m==='match'||m==='listen'||m==='adventure'){startQuiz(m)} }));
+$('playAgain').addEventListener('click',()=>startQuiz(lastMode));
+
+const canvas=$('traceCanvas'),ctx=canvas.getContext('2d');let drawing=false,hasDrawn=false;
+function resizeCanvas(){const rect=canvas.getBoundingClientRect();const dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=10;ctx.strokeStyle='#36b98f';}
+function clearTrace(){const r=canvas.getBoundingClientRect();ctx.clearRect(0,0,r.width,r.height);hasDrawn=false;$('traceFeedback').textContent='';$('traceGuide').style.opacity='.8'}
+function startTrace(){showScreen('trace');traceIndex=Math.floor(Math.random()*26);setTraceLetter();setTimeout(()=>{resizeCanvas();clearTrace()},50)}
+function setTraceLetter(){const d=DATA[traceIndex];$('traceGuide').textContent=d[0];$('traceFeedback').textContent='';}
+function point(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+canvas.addEventListener('pointerdown',e=>{e.preventDefault();drawing=true;hasDrawn=true;canvas.setPointerCapture?.(e.pointerId);const p=point(e);ctx.beginPath();ctx.moveTo(p.x,p.y);$('traceGuide').style.opacity='.25'});
+canvas.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const p=point(e);ctx.lineTo(p.x,p.y);ctx.stroke()});
+function endDraw(){if(drawing){drawing=false;ctx.closePath()}}
+canvas.addEventListener('pointerup',endDraw);canvas.addEventListener('pointercancel',endDraw);canvas.addEventListener('lostpointercapture',endDraw);
+$('traceClear').addEventListener('click',clearTrace);$('traceHear').addEventListener('click',()=>speak('Trace the letter '+DATA[traceIndex][0]+'. '+DATA[traceIndex][0]+' is for '+DATA[traceIndex][1]+'.'));
+$('traceDone').addEventListener('click',()=>{if(!hasDrawn){showToast('Draw the letter first!');return}stars++;save();markLearned(traceIndex);$('traceFeedback').textContent='Wonderful tracing! You earned a star! ⭐';celebrate();speak('Wonderful tracing! You earned a star!')});
+$('traceNext').addEventListener('click',()=>{traceIndex=(traceIndex+1)%26;setTraceLetter();clearTrace();speak('Trace the letter '+DATA[traceIndex][0])});
+window.addEventListener('resize',()=>{if($('trace').classList.contains('active')){const old=hasDrawn;resizeCanvas();if(old)$('traceFeedback').textContent='Screen resized. You can trace again.'}});
+buildGrid();updateStars();renderProgress();
+if('speechSynthesis'in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>{};}
+})();
+</script>
+
+<style id="kids-fun-zone-styles">
+  #kidsFunLaunch{position:fixed;right:14px;bottom:14px;z-index:9998;border:0;border-radius:999px;padding:13px 18px;background:linear-gradient(135deg,#ff7ac6,#ffb347);color:#51264c;font:900 15px/1.1 system-ui,sans-serif;box-shadow:0 8px 22px #44245a35;cursor:pointer;display:flex;align-items:center;gap:8px}
+  #kidsFunLaunch:focus-visible,#kidsFunZone button:focus-visible{outline:4px solid #2364db;outline-offset:3px}
+  #kidsFunZone{position:fixed;inset:0;z-index:9999;background:#17152bb8;display:none;align-items:center;justify-content:center;padding:12px;font-family:system-ui,sans-serif}
+  #kidsFunZone.open{display:flex}
+  #kidsFunZone .kfz-shell{width:min(900px,100%);max-height:94dvh;overflow:auto;border:5px solid #fff;border-radius:28px;background:linear-gradient(160deg,#fff8d9,#e9f8ff 58%,#f9e8ff);box-shadow:0 20px 70px #0005;padding:clamp(14px,3vw,26px);position:relative}
+  #kidsFunZone .kfz-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  #kidsFunZone h2{margin:0;color:#533b9b;font-size:clamp(23px,4vw,34px)}
+  #kidsFunZone .kfz-sub{color:#5b5b7b;margin:5px 0 16px;font-size:14px}
+  #kidsFunZone button{border:0;cursor:pointer;font:800 15px system-ui,sans-serif;border-radius:16px;padding:11px 14px;min-height:44px;touch-action:manipulation}
+  #kidsFunZone .kfz-close{background:#fff;color:#594b75;font-size:22px;min-width:44px}
+  #kidsFunZone .kfz-games{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+  #kidsFunZone .kfz-game{background:#fff;border:3px solid #fff;box-shadow:0 3px 0 #d9d8ef;color:#3c3568;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px}
+  #kidsFunZone .kfz-game.active{border-color:#8c74ff;background:#f2edff}
+  #kidsFunZone .kfz-game span{font-size:26px}
+  #kidsFunZone .kfz-stage{background:#fff;border:3px dashed #c9c0ff;border-radius:22px;min-height:250px;padding:16px;text-align:center;color:#38345c}
+  #kidsFunZone .kfz-stage h3{font-size:23px;margin:2px 0 8px;color:#6547b8}
+  #kidsFunZone .kfz-big{font-size:clamp(44px,9vw,76px);font-weight:1000;line-height:1.1;margin:10px}
+  #kidsFunZone .kfz-row{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+  #kidsFunZone .kfz-primary{background:#7458df;color:white;box-shadow:0 4px 0 #4c369f}
+  #kidsFunZone .kfz-secondary{background:#e6f4ff;color:#2f5682}
+  #kidsFunZone .kfz-choice{background:#fff2b9;color:#55400b;font-size:22px;min-width:64px}
+  #kidsFunZone .kfz-feedback{font-size:18px;font-weight:900;min-height:28px;color:#258353;margin-top:10px}
+  #kidsFunZone .kfz-balloon{width:64px;height:82px;border-radius:50% 50% 46% 46%;color:#fff!important;font-size:24px!important;box-shadow:inset -7px -7px 0 #00000012;position:relative;padding:0!important}
+  #kidsFunZone .kfz-balloon:after{content:"";position:absolute;left:28px;bottom:-9px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:10px solid currentColor}
+  #kidsFunZone .kfz-bubble{width:68px;height:68px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff,#bdefff 35%,#68c7f0 85%);color:#245d8b!important;font-size:26px!important;border:3px solid white!important;box-shadow:0 4px 0 #85c8e7}
+  #kidsFunZone .kfz-animal{background:#fff2c9;color:#59431b;min-width:90px;font-size:19px}
+  #kidsFunZone .kfz-car{font-size:48px;transition:transform .25s}
+  #kidsFunZone .kfz-road{height:14px;background:repeating-linear-gradient(90deg,#8d8a9c 0 28px,#fff 28px 48px);border-radius:10px;margin:12px 0}
+  #kidsFunZone .kfz-reward{font-size:58px;animation:kfzBounce .6s ease infinite alternate}
+  @keyframes kfzBounce{to{transform:translateY(-8px) rotate(5deg)}}
+  @media(max-width:480px){#kidsFunLaunch{right:10px;bottom:10px;padding:12px 14px}#kidsFunZone .kfz-shell{padding:13px;border-radius:20px}#kidsFunZone .kfz-stage{padding:12px;min-height:235px}}
+  @media(prefers-reduced-motion:reduce){#kidsFunZone *{animation:none!important;transition:none!important}}
+</style>
+
+<button id="kidsFunLaunch" type="button" aria-haspopup="dialog" aria-controls="kidsFunZone"><span aria-hidden="true">🎉</span> Fun Zone</button>
+<div id="kidsFunZone" role="dialog" aria-modal="true" aria-label="Kids Fun Zone">
+  <div class="kfz-shell">
+    <div class="kfz-top"><div><h2>🌈 Kids Fun Zone</h2><p class="kfz-sub">Tap, listen, play and collect happy stars!</p></div><button class="kfz-close" id="kfzClose" aria-label="Close Fun Zone">✕</button></div>
+    <div class="kfz-games" aria-label="Choose a mini game">
+      <button class="kfz-game active" data-game="animals"><span>🐻</span>Animal Friends</button>
+      <button class="kfz-game" data-game="balloons"><span>🎈</span>Letter Balloons</button>
+      <button class="kfz-game" data-game="bubbles"><span>🫧</span>Bubble Pop</button>
+      <button class="kfz-game" data-game="sounds"><span>🐾</span>Guess the Sound</button>
+      <button class="kfz-game" data-game="road"><span>🚗</span>Letter Road Trip</button>
+      <button class="kfz-game" data-game="gift"><span>🎁</span>Surprise Gift</button>
+    </div>
+    <div class="kfz-stage" id="kfzStage" aria-live="polite"></div>
+    <div class="kfz-row"><button class="kfz-secondary" id="kfzSpeak">🔊 Say it again</button><button class="kfz-primary" id="kfzNew">✨ Play again</button></div>
+  </div>
+</div>
+
+<script id="kids-fun-zone-script">
+(function(){
+  const zone=document.getElementById('kidsFunZone');
+  if(!zone || zone.dataset.ready) return;
+  zone.dataset.ready='1';
+  const stage=document.getElementById('kfzStage');
+  const launch=document.getElementById('kidsFunLaunch');
+  const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const animals=[
+    {name:'Cat',emoji:'🐱',sound:'Meow meow!',letter:'C'},
+    {name:'Dog',emoji:'🐶',sound:'Woof woof!',letter:'D'},
+    {name:'Cow',emoji:'🐮',sound:'Moo moo!',letter:'C'},
+    {name:'Duck',emoji:'🦆',sound:'Quack quack!',letter:'D'},
+    {name:'Lion',emoji:'🦁',sound:'Roar!',letter:'L'},
+    {name:'Frog',emoji:'🐸',sound:'Ribbit ribbit!',letter:'F'},
+    {name:'Sheep',emoji:'🐑',sound:'Baa baa!',letter:'S'},
+    {name:'Monkey',emoji:'🐵',sound:'Ooh ooh ah ah!',letter:'M'}
+  ];
+  let game='animals', target='A', points=0, lastSpeech='', soundAnimal=animals[0], roadStep=0, giftOpened=false;
+  function say(text){
+    lastSpeech=text;
+    if('speechSynthesis' in window){
+      try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.82;u.pitch=1.2;u.volume=.9;window.speechSynthesis.speak(u);}catch(e){}
+    }
+  }
+  function pickLetter(){return letters[Math.floor(Math.random()*letters.length)];}
+  function pickAnimal(){return animals[Math.floor(Math.random()*animals.length)];}
+  function addPoint(message){points++;feedback((message||'Great job!')+' ⭐');}
+  function feedback(text){const el=stage.querySelector('.kfz-feedback');if(el)el.textContent=text;}
+  function choices(correct,count=3){
+    const arr=[correct];while(arr.length<count){const v=pickLetter();if(!arr.includes(v))arr.push(v);}
+    return arr.sort(()=>Math.random()-.5);
+  }
+  function showAnimals(){
+    game='animals';const animal=pickAnimal();target=animal.letter;
+    stage.innerHTML='<h3>Meet an Animal Friend!</h3><div class="kfz-big" id="kfzAnimalEmoji">'+animal.emoji+'</div><div style="font-size:25px;font-weight:900">'+animal.name+'</div><p>Tap the animal to hear its voice!</p><div class="kfz-row"><button class="kfz-animal" id="kfzAnimalTap">'+animal.emoji+' '+animal.name+'</button><button class="kfz-choice" id="kfzAnimalLetter">Letter '+animal.letter+'</button></div><div class="kfz-feedback"></div>';
+    lastSpeech='This is a '+animal.name+'. It says '+animal.sound+' '+animal.name+' starts with '+animal.letter+'.';
+    document.getElementById('kfzAnimalTap').onclick=()=>{say(animal.name+'! '+animal.sound+' '+animal.name+' starts with '+animal.letter+'.');document.getElementById('kfzAnimalEmoji').style.transform='scale(1.15)';setTimeout(()=>{const e=document.getElementById('kfzAnimalEmoji');if(e)e.style.transform='';},220);};
+    document.getElementById('kfzAnimalLetter').onclick=()=>{say('The letter '+animal.letter+'! '+animal.name+' starts with '+animal.letter+'.');addPoint('Animal expert!');};
+    say(lastSpeech);
+  }
+  function showBalloons(){
+    game='balloons';target=pickLetter();const arr=choices(target,8);
+    stage.innerHTML='<h3>Pop the Letter Balloons!</h3><p>Find the letter <b style="font-size:28px;color:#ef4e91">'+target+'</b></p><div class="kfz-row" id="kfzBalloonRow">'+arr.map((x,i)=>'<button class="kfz-balloon" style="background:'+['#ff719a','#57b7f7','#9a80ef','#ffb54c','#56cba5','#fa8a64','#73a9ff','#d780e8'][i]+'" data-letter="'+x+'">'+x+'</button>').join('')+'</div><div class="kfz-feedback"></div>';
+    say('Pop a balloon with the letter '+target+'.');
+    stage.querySelectorAll('.kfz-balloon').forEach(b=>b.onclick=()=>{if(b.dataset.letter===target){b.textContent='✨';b.disabled=true;b.style.opacity='.5';addPoint('Pop! You found '+target+'!');say('Pop! You found '+target+'!');setTimeout(showBalloons,900);}else{b.textContent='😊';say('Almost! Find the letter '+target+'.');feedback('Try another balloon! 💛');}});
+  }
+  function showBubbles(){
+    game='bubbles';target=pickLetter();const arr=choices(target,8);
+    stage.innerHTML='<h3>Bubble Pop ABC!</h3><p>Pop a bubble with <b style="font-size:28px;color:#168bc0">'+target+'</b></p><div class="kfz-row" id="kfzBubbleRow">'+arr.map(x=>'<button class="kfz-bubble" data-letter="'+x+'">'+x+'</button>').join('')+'</div><div class="kfz-feedback"></div>';
+    say('Can you pop the bubble with the letter '+target+'?');
+    stage.querySelectorAll('.kfz-bubble').forEach(b=>b.onclick=()=>{if(b.dataset.letter===target){b.textContent='💧';b.disabled=true;addPoint('Bubble pop star!');say('Pop! That is '+target+'!');setTimeout(showBubbles,900);}else{b.textContent='💖';say('Try again. Look for '+target+'.');feedback('You can do it! 💪');}});
+  }
+  function showSounds(){
+    game='sounds';soundAnimal=pickAnimal();
+    stage.innerHTML='<h3>Guess the Animal!</h3><div class="kfz-big">🔊 🐾</div><p>Listen to the animal clue, then choose your friend.</p><div class="kfz-row">'+animals.slice().sort(()=>Math.random()-.5).slice(0,6).map(a=>'<button class="kfz-animal" data-animal="'+a.name+'">'+a.emoji+'<br>'+a.name+'</button>').join('')+'</div><button class="kfz-secondary" id="kfzHear">🔊 Hear clue</button><div class="kfz-feedback"></div>';
+    lastSpeech='Which animal says '+soundAnimal.sound;
+    say(lastSpeech);
+    document.getElementById('kfzHear').onclick=()=>say(lastSpeech);
+    stage.querySelectorAll('[data-animal]').forEach(b=>b.onclick=()=>{if(b.dataset.animal===soundAnimal.name){addPoint('You guessed it!');say('Yes! The '+soundAnimal.name+' says '+soundAnimal.sound);}else{feedback('Keep trying, little explorer!');say('Not that one. Listen again!');}});
+  }
+  function showRoad(){
+    game='road';target=pickLetter();roadStep=0;
+    const arr=choices(target,3);
+    stage.innerHTML='<h3>Letter Road Trip!</h3><p>Drive the car to letter <b style="font-size:28px;color:#e67c27">'+target+'</b></p><div class="kfz-row"><span class="kfz-car" id="kfzCar">🚗</span></div><div class="kfz-road"></div><div class="kfz-row">'+arr.map(x=>'<button class="kfz-choice" data-letter="'+x+'">'+x+'</button>').join('')+'</div><div class="kfz-feedback"></div>';
+    say('Help the car drive to the letter '+target+'.');
+    stage.querySelectorAll('[data-letter]').forEach(b=>b.onclick=()=>{if(b.dataset.letter===target){document.getElementById('kfzCar').style.transform='translateX(70px)';addPoint('Vroom! You found '+target+'!');say('Vroom! You found '+target+'!');setTimeout(showRoad,1000);}else{feedback('Wrong road! Try again. 🚗');say('Try another letter.');}});
+  }
+  function showGift(){
+    game='gift';giftOpened=false;
+    const gifts=['🧸','🦄','🚀','🐼','🌟','🦋','🎨','🐢'];
+    const gift=gifts[Math.floor(Math.random()*gifts.length)];
+    stage.innerHTML='<h3>Surprise Gift Box!</h3><p>Tap the box to open your surprise!</p><button id="kfzGiftBox" style="font-size:78px;background:transparent;min-height:110px">🎁</button><div class="kfz-feedback"></div>';
+    lastSpeech='Tap the gift box to find a surprise!';
+    say(lastSpeech);
+    document.getElementById('kfzGiftBox').onclick=()=>{if(giftOpened)return;giftOpened=true;document.getElementById('kfzGiftBox').outerHTML='<div class="kfz-reward">'+gift+'</div>';addPoint('Surprise! You earned a star!');say('Surprise! You found '+({ '🧸':'a teddy bear','🦄':'a unicorn','🚀':'a rocket','🐼':'a panda','🌟':'a star','🦋':'a butterfly','🎨':'art','🐢':'a turtle'}[gift]||'a prize')+'! You are amazing!');};
+  }
+  const renderers={animals:showAnimals,balloons:showBalloons,bubbles:showBubbles,sounds:showSounds,road:showRoad,gift:showGift};
+  function setGame(name){game=name;zone.querySelectorAll('[data-game]').forEach(b=>b.classList.toggle('active',b.dataset.game===name));renderers[name]();}
+  launch.addEventListener('click',()=>{zone.classList.add('open');setGame('animals');document.getElementById('kfzClose').focus();});
+  document.getElementById('kfzClose').addEventListener('click',()=>{zone.classList.remove('open');if('speechSynthesis'in window)window.speechSynthesis.cancel();launch.focus();});
+  zone.addEventListener('click',e=>{if(e.target===zone){zone.classList.remove('open');if('speechSynthesis'in window)window.speechSynthesis.cancel();}});
+  zone.querySelectorAll('[data-game]').forEach(b=>b.addEventListener('click',()=>setGame(b.dataset.game)));
+  document.getElementById('kfzSpeak').addEventListener('click',()=>say(lastSpeech||'Welcome to the Fun Zone!'));
+  document.getElementById('kfzNew').addEventListener('click',()=>setGame(game));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&zone.classList.contains('open')){zone.classList.remove('open');if('speechSynthesis'in window)window.speechSynthesis.cancel();}});
+})();
+</script>
+
+</body>
+</html>
