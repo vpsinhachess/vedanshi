@@ -1,5 +1,55 @@
-const CACHE_NAME = 'vedanshi-fun-world-v1';
-const APP_SHELL = ['./','./index.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-512-maskable.png'];
-self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting())); });
-self.addEventListener('activate', event => { event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))).then(() => self.clients.claim())); });
-self.addEventListener('fetch', event => { const req=event.request; if(req.method!=='GET'||new URL(req.url).origin!==self.location.origin)return; event.respondWith(caches.match(req).then(cached=>{if(cached)return cached;return fetch(req).then(res=>{if(res&&res.ok&&req.mode==='navigate'){const copy=res.clone();caches.open(CACHE_NAME).then(cache=>cache.put('./index.html',copy));}return res;}).catch(()=>caches.match('./index.html'));})); });
+const CACHE_NAME = 'vedanshi-fun-world-v2';
+const BASE = '/vedanshi/';
+const APP_SHELL = [
+  BASE,
+  BASE + 'index.html',
+  BASE + 'manifest.webmanifest',
+  BASE + 'icons/icon-192.png',
+  BASE + 'icons/icon-512.png',
+  BASE + 'icons/icon-512-maskable.png'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(APP_SHELL);
+    await self.skipWaiting();
+  })());
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter((key) => key.startsWith('vedanshi-fun-world-') && key !== CACHE_NAME).map((key) => caches.delete(key)));
+    await self.clients.claim();
+  })());
+});
+
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  const url = new URL(request.url);
+  if (request.method !== 'GET' || url.origin !== self.location.origin || !url.pathname.startsWith(BASE)) return;
+  if (request.mode === 'navigate') {
+    event.respondWith((async () => {
+      try {
+        const response = await fetch(request);
+        if (response && response.ok) {
+          const cache = await caches.open(CACHE_NAME);
+          await cache.put(BASE, response.clone());
+          await cache.put(BASE + 'index.html', response.clone());
+        }
+        return response;
+      } catch (error) {
+        const cache = await caches.open(CACHE_NAME);
+        return (await cache.match(request)) || (await cache.match(BASE)) || (await cache.match(BASE + 'index.html')) || Response.error();
+      }
+    })());
+    return;
+  }
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    return fetch(request);
+  })());
+});

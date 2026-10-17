@@ -1,10 +1,10 @@
 {
-  "id": "./",
+  "id": "/vedanshi/",
   "name": "Vedanshi's Fun World",
   "short_name": "Vedanshi Fun",
   "description": "A happy place for kids to draw, learn ABCs, practise typing and play number games.",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/vedanshi/?source=pwa",
+  "scope": "/vedanshi/",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#fff2f9",
@@ -16,19 +16,19 @@
   ],
   "icons": [
     {
-      "src": "./icons/icon-192.png",
+      "src": "/vedanshi/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/icon-512.png",
+      "src": "/vedanshi/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/icon-512-maskable.png",
+      "src": "/vedanshi/icons/icon-512-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
